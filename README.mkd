@@ -1,0 +1,10 @@
+iamcoboler
+==========
+
+purpose of this project
+-----------------------
+ Remind me. 'I am COBOLer!'
+
+dependency
+----------
+ use tiny-cobol for COBOL compile. 

@@ -1,0 +1,12 @@
+convert -- simple file convert
+==============================
+
+usage
+-----
+convert infile to outfile.
+one input record to one output record.
+
+command line
+------------
+    `convert infile outfile`
+

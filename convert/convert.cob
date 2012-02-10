@@ -1,0 +1,65 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CONVERT.
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT INFILE ASSIGN TO INFILENAME
+           ORGANIZATION IS LINE SEQUENTIAL.
+       SELECT OUTFILE ASSIGN TO OUTFILENAME
+           ORGANIZATION IS LINE SEQUENTIAL.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD INFILE.
+       01 IN-RECORD.
+         03 IN-KEY PIC X(03).
+         03 IN-DATA PIC X(07).
+       FD OUTFILE.
+       01 OUT-RECORD.
+         03 OUT-KEY PIC X(03).
+         03 OUT-DATA PIC X(07).
+
+       WORKING-STORAGE SECTION.
+       01 WORK.
+         03 CMD PIC X(256).
+         03 EXE PIC X(256).
+         03 INFILENAME PIC X(256).
+         03 OUTFILENAME PIC X(256).
+         03 INFILE-EOF PIC X(01).
+
+       PROCEDURE DIVISION.
+       MAIN SECTION.
+           PERFORM INIT
+           OPEN INPUT INFILE
+           OPEN OUTPUT OUTFILE
+
+           PERFORM READ-INFILE
+           PERFORM UNTIL INFILE-EOF = '1'
+               MOVE IN-KEY TO OUT-KEY
+               MOVE ZERO TO OUT-DATA
+               WRITE OUT-RECORD
+               PERFORM READ-INFILE
+           END-PERFORM
+
+           CLOSE INFILE OUTFILE
+
+           STOP RUN.
+
+       INIT.
+           ACCEPT CMD FROM COMMAND-LINE
+           UNSTRING CMD DELIMITED BY SPACE 
+               INTO EXE, INFILENAME, OUTFILENAME
+           IF OUTFILENAME = SPACE THEN
+               DISPLAY "usage: convert input-file output-file"
+               MOVE 1 TO RETURN-CODE
+               EXIT PROGRAM
+           END-IF.
+
+       READ-INFILE.
+           READ INFILE RECORD INTO IN-RECORD
+             AT END
+               MOVE '1' TO INFILE-EOF
+           END-READ.
+
+       END-PROGRAM.
